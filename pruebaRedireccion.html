@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Formulario Ultra Simple de Usuario</title>
+  </head>
+  <body>
+    <div>
+      <h2>Registrar Nuevo Usuario</h2>
+
+      <form id="userForm">
+        <div>
+          <label for="nombre">Nombre:</label>
+          <input type="text" id="nombre" name="nombre" required />
+        </div>
+        <div>
+          <label for="email">Email:</label>
+          <input type="email" id="email" name="email" required />
+        </div>
+        <div>
+          <label for="medio">Medio de Transporte:</label>
+          <input
+            type="text"
+            id="medio"
+            name="medio"
+            placeholder="Ej: bicicleta, a pie"
+          />
+        </div>
+        <div>
+          <label for="distancia">Distancia (km):</label>
+          <input
+            type="number"
+            id="distancia"
+            name="distancia"
+            min="0"
+            step="0.1"
+          />
+        </div>
+        <div>
+          <label for="tiempo">Tiempo (minutos):</label>
+          <input type="number" id="tiempo" name="tiempo" min="0" />
+        </div>
+
+        <button type="submit">Enviar Datos</button>
+      </form>
+    </div>
+
+    <script>
+      const userForm = document.getElementById("userForm");
+      async function a() {
+        let data = await fetch("https://api-rest-qc7f.onrender.com/usuarios");
+        console.log(data);
+      }
+      a();
+      userForm.addEventListener("submit", async (event) => {
+        event.preventDefault(); // Prevents default form submission
+
+        // Collect form data
+        const formData = new FormData(userForm);
+        const nombre = formData.get("nombre");
+        const email = formData.get("email");
+        const medio = formData.get("medio");
+        const distancia = parseFloat(formData.get("distancia"));
+        const tiempo = parseInt(formData.get("tiempo"));
+
+        // Build the JSON object according to your API structure
+        const userData = {
+          id: 7,
+          nombre: nombre,
+          email: email,
+          planMovilidad: {
+            medio: medio,
+            distancia: isNaN(distancia) ? null : distancia, // Handles empty field case
+            tiempo: isNaN(tiempo) ? null : tiempo, // Handles empty field case
+          },
+        };
+
+        try {
+          // Send data to your API
+          const response = await fetch(
+            "https://api-rest-qc7f.onrender.com/usuarios",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(userData),
+            }
+          );
+          // Luego del POST exitoso:
+          window.location.href = `https://jemswaner.github.io/obtenerAPI/?id=${userData.id}`;
+        } catch (error) {
+          console.log(error);
+        }
+      });
+    </script>
+  </body>
+</html>

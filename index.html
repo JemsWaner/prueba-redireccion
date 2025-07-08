@@ -89,7 +89,7 @@
             }
           );
           // Luego del POST exitoso:
-          window.open(`https://jemswaner.github.io/obtenerAPI/?id=${userData.id}`,"_blank");
+          window.location.href=`https://jemswaner.github.io/obtenerAPI/?id=${userData.id}`;
         } catch (error) {
           console.log(error);
         }
